@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "react-immutable-proptypes": {
+      "version": "1.7.1",
+      "resolved": "https://registry.npmjs.org/react-immutable-proptypes/-/react-immutable-proptypes-1.7.1.tgz",
+      "from": "react-immutable-proptypes@1.7.1"
+    },
+    "react-nestedlist": {
+      "version": "0.0.3",
+      "resolved": "https://registry.npmjs.org/react-nestedlist/-/react-nestedlist-0.0.3.tgz",
+      "from": "react-nestedlist@0.0.3"
+    }
+  }
+}
