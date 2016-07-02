@@ -54,16 +54,26 @@ ComponentsPage = React.createClass({
     const {entryName, filterParam} = this.data;
     const {recents, showRecents, filterState} = this.state;
     const filterString = filterParam || filterState;
+    const sidebar = (
+      <ComponentsPageSidebar recents={recents} filter={filterString} showRecents={showRecents}
+            onFilterInput={this.onFilterInput} onFilterSubmit={this.onFilterSubmit}
+            onEntryClick={this.onEntryClick}/>
+    );
 
     if (entryName) {
-      return (<SingleComponentPage entryName={entryName}/>);
+      return (
+        <ChromaticLayout showSidebar={true} sidebar={sidebar} >
+          <div className="styleguide-content">
+            <SingleComponentPage entryName={entryName}/>
+          </div>
+        </ChromaticLayout>
+      )
+
+      //(<SingleComponentPage entryName={entryName}/>);
     }
 
     return (
-      <ChromaticLayout showSidebar={true} sidebar={
-          <ComponentsPageSidebar recents={recents} filter={filterString} showRecents={showRecents}
-            onFilterInput={this.onFilterInput} onFilterSubmit={this.onFilterSubmit}
-            onEntryClick={this.onEntryClick}/>} >
+      <ChromaticLayout showSidebar={true} sidebar={sidebar} >
         <div className="styleguide-content">
           <StyleguideReadme/>
         </div>

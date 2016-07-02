@@ -3,7 +3,7 @@ import React from 'react';
 
 const {Chromatic} = Package['mdg:chromatic-api'] || {};
 
-import {flatMap} from 'react-nestedlist/dist/utils/nestedListUtils';
+import {flatMap, unindex, unwrap} from 'react-nestedlist/dist/utils/nestedListUtils';
 import NestedList, {NestedListItem} from 'react-nestedlist';
 import Immutable from 'immutable';
 
@@ -76,7 +76,9 @@ export const NestedListWrap = React.createClass({
   propTypes: {
     tree: React.PropTypes.string.isRequired,
     validate: React.PropTypes.func,
-    className: React.PropTypes.string
+    className: React.PropTypes.string,
+    onItemDrag: React.PropTypes.func,
+    onItemClick: React.PropTypes.func
   },
   getInitialState() {
     return {tree: this.prepare(this.props.tree)}
@@ -95,21 +97,28 @@ export const NestedListWrap = React.createClass({
   },
   render() {
     let className = "list" + (this.props.className ? (' ' + this.props.className) : '')
+    let onItemDrag = this.props.onItemDrag;
+    let onItemClick = this.props.onItemClick;
     return (
       <NestedList data={this.state.tree} onDataChange={tree => this.setState({tree})} validate={this.validate}>
-        {(items, draggedId) => (
-          <div className={className}>
-            {flatMap(items, item => (
-              <NestedListItem key={item.get('_id')} item={item}>
-                <div
-                  style={{paddingLeft: (item.get('__level') - 1) * 20 + 10}}
-                  className={'list-item' + (draggedId === item.get('_id') ? ' list-item-preview' : '')}>
-                  {item.get('label')}
-                </div>
-              </NestedListItem>
-            ))}
-          </div>
-        )}
+        {(items, draggedId) => {
+          console.log(unindex(items))
+          console.log(unwrap(items))
+          onItemDrag(items, draggedId)
+          return (
+            <div className={className}>
+              {flatMap(items, item => (
+                <NestedListItem key={item.get('_id')} item={item}>
+                  <div
+                    style={{paddingLeft: (item.get('__level') - 1) * 20 + 10}}
+                    className={'list-item' + (draggedId === item.get('_id') ? ' list-item-preview' : '')} onClick={(e) => onItemClick(e,item)}>
+                    {item.get('label')}
+                  </div>
+                </NestedListItem>
+              ))}
+            </div>
+          )
+        }}
       </NestedList>
     );
   }

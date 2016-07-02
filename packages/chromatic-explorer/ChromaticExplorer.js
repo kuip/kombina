@@ -31,12 +31,16 @@ ChromaticExplorer = {
       component: ComponentSpec
     });
     //  add iframe routes for 'all' spec option for each component
-    FlowRouter.route(`${options.basePath}/_component/:entryName?/all`, {
+    FlowRouter.route(`${options.basePath}/_component/:entryName?`, {
       name: 'chromatic-component-iframe',
       component: ComponentSpec
     });
+    /*FlowRouter.route(`${options.basePath}/_component/:entryName?/all`, {
+      name: 'chromatic-component-iframe',
+      component: ComponentSpec
+    });*/
     // add iframe routes for kombine components
-    FlowRouter.route(`${options.basePath}/_kombine/all`, {
+    FlowRouter.route(`${options.basePath}/_kombine`, {
       name: 'chromatic-component-iframe',
       component: CombineSpec
     });

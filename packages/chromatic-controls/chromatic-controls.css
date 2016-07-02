@@ -6,11 +6,11 @@ svg:not(:root) {
   padding: 3px !important;
 }
 .dg li:not(.folder) {
-  background: transparent !important;
+  background: #434D57 !important;
 }
 
 .dg.main .close-button:hover {
-  background-color: transparent !important;
+  background-color: #434D57 !important;
 }
 
 .dg.main .close-button {

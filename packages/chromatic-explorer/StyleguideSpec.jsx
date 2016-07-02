@@ -8,7 +8,6 @@ StyleguideSpec = React.createClass({
   propTypes: {
     entry: React.PropTypes.instanceOf(Chromatic.Entry),
     component: React.PropTypes.instanceOf(React.Component.constructor),
-    specName: React.PropTypes.string.isRequired,
     meta: React.PropTypes.object
   },
   componentDidMount() {
@@ -30,13 +29,13 @@ StyleguideSpec = React.createClass({
     if (StubCollections) StubCollections.restore();
   },
   entry() {
-    const {entry, component, specName} = this.props;
-    return entry || Chromatic.entry(component && component.displayName || specName);
+    const {entry, component} = this.props;
+    return entry || Chromatic.entry(component && component.displayName);
   },
   spec() {
-    const {specName} = this.props;
     const entry = this.entry();
-    let spec = entry && _.find(entry.specs, s => s.name === specName);
+    let specName = Object.keys(entry.specs)[0];
+    let spec = entry && entry.specs[specName];
     if (!spec && entry && entry.specs.length > 0) {
       spec = entry().specs[0];
     }

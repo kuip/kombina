@@ -2,10 +2,16 @@
 /* global React FlowRouter ChromaticLayout StyleguideReadme ComponentsPageSidebar
 ReactMeteorData SingleComponentPage */
 import React from 'react';
-
+import { ReactMeteorData } from 'meteor/react-meteor-data';
 const {Chromatic} = Package['mdg:chromatic-api'] || {};
 
 CombinePage = React.createClass({
+  mixins: [ReactMeteorData],
+  getMeteorData() {
+    return {
+      tree: decodeURIComponent(FlowRouter.getQueryParam('tree'))
+    };
+  },
   getInitialState() {
     return ({
       viewport: 'tablet',
@@ -43,20 +49,18 @@ CombinePage = React.createClass({
     const {viewport, color, iframeLoaded} = this.state;
     const isBrowser = viewport === 'browser';
     const parent = (<CombinePageParent/>);
-    let tree = encodeURIComponent(JSON.stringify(Chromatic.allKombins()))
-    const url = `${Meteor.absoluteUrl()}styleguide/_kombine/all?tree=${tree}`;
+    let tree = this.data.tree;
+    if(Chromatic._kombins.length || !tree || tree == 'undefined')
+      tree = encodeURIComponent(JSON.stringify(Chromatic.allKombins()));
+    const url = `${Meteor.absoluteUrl()}styleguide/_kombine?tree=${tree}`;
     const iframeContainer = (
       <div className={classnames('iframe-container', viewport)}>
         <iframe onLoad={this.onIframeLoad} ref={this.getIframeRef} src={url}/>
       </div>
     );
-    /*const header = (
-      <SingleComponentPageHeader entryName={entryName} specName={specName}
-      viewport={viewport} background={color} onSpecChange={this.onSpecChange}
-      onViewportClick={this.onViewportClick} onBackgroundChange={this.onBackgroundChange}/>
-    );*/
+    tree = decodeURIComponent(tree);
     const sidebar = (
-      <CombinePageSidebar onSpecChange={this.onSpecChange}/>
+      <CombinePageSidebar onSpecChange={this.onSpecChange} tree={tree}/>
     );
     const className = classnames('styleguide-content', {'full-width': isBrowser, 'iframe-loaded': iframeLoaded});
 

@@ -52,7 +52,8 @@ SingleComponentPage = React.createClass({
       return <StyleguideNotFound/>;
     }
 
-    const url = `${Meteor.absoluteUrl()}styleguide/_component/${entryName}/all`;
+    //const url = `${Meteor.absoluteUrl()}styleguide/_component/${entryName}/all`;
+    const url = `${Meteor.absoluteUrl()}styleguide/_component/${entryName}`;
     const iframeContainer = (
       <div className={classnames('iframe-container', viewport)}>
         <iframe onLoad={this.onIframeLoad} ref={this.getIframeRef} src={url}/>
@@ -70,6 +71,15 @@ SingleComponentPage = React.createClass({
     const className = classnames('styleguide-content', {'full-width': isBrowser, 'iframe-loaded': iframeLoaded});
 
     return (
+        <div className={className}>
+          {iframeContainer}
+          <div className="loading-grid">
+            <ColorGrid/>
+          </div>
+        </div>
+    );
+
+    /*return (
       <ChromaticLayout header={header} sidebar={sidebar} showSidebar={!isBrowser}>
         <div className={className}>
           {iframeContainer}
@@ -78,6 +88,6 @@ SingleComponentPage = React.createClass({
           </div>
         </div>
       </ChromaticLayout>
-    );
+    );*/
   }
 });
