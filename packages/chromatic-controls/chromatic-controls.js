@@ -33,7 +33,7 @@ Tracker.autorun(function() {
 
 
 ChromaticControlsShow = function(scc, obj, entry, spec, meta, inst) {
-  if(! meta || meta.type != 'component' || (meta.spec && meta.spec == 'all'))
+  if(! meta || ['component', 'combine'].indexOf(meta.type) == -1 || (meta.spec && meta.spec == 'all'))
     return;
 
   scc.remove()
@@ -49,8 +49,13 @@ ChromaticControlsShow = function(scc, obj, entry, spec, meta, inst) {
   var customContainer = doc.body.appendChild(doc.createElement('div'))
   customContainer.setAttribute('id', 'my-gui-container')
 
-  var props = JSON.parse(JSON.stringify(obj.props)),
-    folders = {}, colors = [],
+  var props
+  if(entry.name != 'CombinationRoot')
+    props = JSON.parse(JSON.stringify(obj.props))
+  else
+    props = {name: spec.name}
+
+  var folders = {}, colors = [],
     hiddenControls = [],
     styles = Chromatic.allClasses() || {},
     styleCat = Object.keys(styles)
@@ -121,11 +126,16 @@ ChromaticControlsShow = function(scc, obj, entry, spec, meta, inst) {
       modalT.value = JSON.stringify(jsonn)
       scc.modal.style.display = "block";
     }
-    this.kombine = function() {
-      var jsonn = getGuiValues(scc.gui)
-      jsonn.className = getStyleVals(scc.gui).join(' ')
-      window.parent.Chromatic.kombine(entry.name, spec.name, JSON.stringify(jsonn))
-    }
+    if(meta.type == 'component')
+      this.kombine = function() {
+        var jsonn = getGuiValues(scc.gui)
+        jsonn.className = getStyleVals(scc.gui).join(' ')
+        window.parent.Chromatic.kombine(entry.name, spec.name, JSON.stringify(jsonn))
+      }
+    else if(meta.type == 'combine')
+      this.save = function() {
+        console.log('save')
+      }
     this['add class'] = ''
   }
 
@@ -253,7 +263,10 @@ ChromaticControlsShow = function(scc, obj, entry, spec, meta, inst) {
       buildGuiAttr(props[k], k, scc.gui)
 
   scc.gui.add(gao, 'info')
-  scc.gui.add(gao, 'kombine')
+  if(meta.type == 'component')
+    scc.gui.add(gao, 'kombine')
+  else if(meta.type == 'combine')
+    scc.gui.add(gao, 'save')
 
   scc.gui = scc.gui
 }

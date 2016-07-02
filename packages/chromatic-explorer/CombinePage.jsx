@@ -19,7 +19,8 @@ CombinePage = React.createClass({
       viewport: 'tablet',
       color: 'lightest',
       iframeLoaded: false,
-      tree: tree
+      tree: tree,
+      selected: null
     });
   },
   componentWillMount() {
@@ -70,15 +71,16 @@ CombinePage = React.createClass({
     this.setState({tree: tree})
   },
   onItemClick(e, item) {
-    console.log(item.get('_id'))
-    console.log(item.get('__level'))
-    console.log(item.get('label'))
+    this.setState({selected: item.get('_id')})
+    //console.log(item.get('_id'))
+    //console.log(item.get('__level'))
+    //console.log(item.get('label'))
   },
   render() {
     const {viewport, color, iframeLoaded} = this.state;
     const isBrowser = viewport === 'browser';
     const parent = (<CombinePageParent/>);
-    const url = `${Meteor.absoluteUrl()}styleguide/_kombine?tree=${this.prepareTree()}`;
+    const url = `${Meteor.absoluteUrl()}styleguide/_kombine?tree=${this.prepareTree()}&selected=${this.state.selected}`;
     const iframeContainer = (
       <div className={classnames('iframe-container', viewport)}>
         <iframe onLoad={this.onIframeLoad} ref={this.getIframeRef} src={url}/>
