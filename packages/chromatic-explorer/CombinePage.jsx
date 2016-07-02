@@ -9,14 +9,17 @@ CombinePage = React.createClass({
   mixins: [ReactMeteorData],
   getMeteorData() {
     return {
-      tree: decodeURIComponent(FlowRouter.getQueryParam('tree'))
+      tree: FlowRouter.getQueryParam('tree')
     };
   },
   getInitialState() {
+    let tree = Chromatic._kombins.length ? Chromatic.allKombins() : null
+
     return ({
       viewport: 'tablet',
       color: 'lightest',
-      iframeLoaded: false
+      iframeLoaded: false,
+      tree: tree
     });
   },
   componentWillMount() {
@@ -45,22 +48,44 @@ CombinePage = React.createClass({
     const iframeContent = iframe && (iframe.contentWindow || iframe.contentDocument);
     this._iframe = iframeContent;
   },
+  tree() {
+    return this.state.tree || this.data.tree;
+  },
+  prepareTree() {
+    return encodeURIComponent(this.tree())
+  },
+  validate(tree) {
+    //console.log(tree.count())
+    //console.log(tree.first().count())
+    if (tree.first().get('label') != 'New component')
+      return false;
+
+    if(tree.toJSON()[0].children.length != JSON.parse(this.tree())[0].children.length)
+      return false;
+
+    return true;
+  },
+  onItemDrag(items, draggedId) {
+    let tree = JSON.stringify(items.toJSON())
+    this.setState({tree: tree})
+  },
+  onItemClick(e, item) {
+    console.log(item.get('_id'))
+    console.log(item.get('__level'))
+    console.log(item.get('label'))
+  },
   render() {
     const {viewport, color, iframeLoaded} = this.state;
     const isBrowser = viewport === 'browser';
     const parent = (<CombinePageParent/>);
-    let tree = this.data.tree;
-    if(Chromatic._kombins.length || !tree || tree == 'undefined')
-      tree = encodeURIComponent(JSON.stringify(Chromatic.allKombins()));
-    const url = `${Meteor.absoluteUrl()}styleguide/_kombine?tree=${tree}`;
+    const url = `${Meteor.absoluteUrl()}styleguide/_kombine?tree=${this.prepareTree()}`;
     const iframeContainer = (
       <div className={classnames('iframe-container', viewport)}>
         <iframe onLoad={this.onIframeLoad} ref={this.getIframeRef} src={url}/>
       </div>
     );
-    tree = decodeURIComponent(tree);
     const sidebar = (
-      <CombinePageSidebar onSpecChange={this.onSpecChange} tree={tree}/>
+      <CombinePageSidebar onSpecChange={this.onSpecChange} tree={this.tree()} onItemDrag={this.onItemDrag} onItemClick={this.onItemClick} validate={this.validate}/>
     );
     const className = classnames('styleguide-content', {'full-width': isBrowser, 'iframe-loaded': iframeLoaded});
 

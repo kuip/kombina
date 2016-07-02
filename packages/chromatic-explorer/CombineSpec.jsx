@@ -29,7 +29,7 @@ CombineSpec = React.createClass({
   },
   render() {
     let {tree} = this.data;
-    tree = JSON.parse(tree)
+    tree = JSON.parse(tree);
     const combinations = tree[0].children.map(function(c) {
       let names = c._id.split('_')
       let entry = Chromatic.entry(names[0])

@@ -14,45 +14,22 @@ CombinePageParent = React.createClass({
 
 CombinePageSidebar = React.createClass({
   propTypes: {
-    tree: React.PropTypes.string
-  },
-
-  onItemDrag(items, draggedId) {
-      console.log('onDrag')
-      console.log(items)
-      console.log(draggedId)
-  },
-
-  onItemClick(e, item) {
-    console.log(e)
-    console.log(e.target)
-    console.log(item)
-    console.log(item.get('_id'))
-    console.log(item.get('__level'))
-    console.log(item.get('label'))
-
+    tree: React.PropTypes.string,
+    onItemDrag: React.PropTypes.func,
+    onItemClick: React.PropTypes.func,
+    validate: React.PropTypes.func
   },
 
   render() {
     let tree = this.props.tree || JSON.stringify(Chromatic.allKombins())
-
-    let validate = function(tree) {
-      console.log('validate')
-      console.log(tree.count())
-      console.log(tree.first())
-      console.log(tree.first().count())
-      console.log(tree.get('children'))
-      console.log(tree.first().get('children'))
-      console.log('/validate')
-      if (tree.first().get('label') != 'New component')
-        return false;
-      return true;
-    }
+    let onItemDrag = this.props.onItemDrag
+    let onItemClick = this.props.onItemClick
+    let validate = this.props.validate
 
     const baseComponents = (
       <div className="base-components">
         <CombinePageParent />
-        <NestedListWrap tree={tree} validate={validate} onItemDrag={this.onItemDrag} onItemClick={this.onItemClick} className="list-dark"/>
+        <NestedListWrap tree={tree} validate={validate} onItemDrag={onItemDrag} onItemClick={onItemClick} className="list-dark"/>
       </div>
     );
 

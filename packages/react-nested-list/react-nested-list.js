@@ -1,9 +1,8 @@
-console.log('react nseted list loaded')
 import React from 'react';
 
 const {Chromatic} = Package['mdg:chromatic-api'] || {};
 
-import {flatMap, unindex, unwrap} from 'react-nestedlist/dist/utils/nestedListUtils';
+import {flatMap, unindex} from 'react-nestedlist/dist/utils/nestedListUtils';
 import NestedList, {NestedListItem} from 'react-nestedlist';
 import Immutable from 'immutable';
 
@@ -100,11 +99,11 @@ export const NestedListWrap = React.createClass({
     let onItemDrag = this.props.onItemDrag;
     let onItemClick = this.props.onItemClick;
     return (
-      <NestedList data={this.state.tree} onDataChange={tree => this.setState({tree})} validate={this.validate}>
+      <NestedList data={this.state.tree} onDataChange={(tree) => {
+        this.setState({tree})
+        onItemDrag(unindex(tree))
+      }} validate={this.validate}>
         {(items, draggedId) => {
-          console.log(unindex(items))
-          console.log(unwrap(items))
-          onItemDrag(items, draggedId)
           return (
             <div className={className}>
               {flatMap(items, item => (
